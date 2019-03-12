@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="URL_UP_ALBUM">http://api.bilibili.com/x/web-interface/view</string>
+    <string name="URL_UP_VIDEO">http://api.bilibili.com/x/player/playurl</string>
+    <string name="URL_UP_INFO">http://api.bilibili.com/x/space/acc/info</string>
+    <string name="URL_UP_CHANNELS">http://api.bilibili.com/x/space/channel/list</string>
+    <string name="URL_UP_CHANNEL">http://api.bilibili.com/x/space/channel/video</string>
+    <string name="URL_UP_ALL_VIDEO">http://space.bilibili.com/ajax/member/getSubmitVideos</string>
+    <string name="COOKIES">SESSDATA= </string>
+</resources>

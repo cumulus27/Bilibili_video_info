@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">androidHttp</string>
-    <string name="title">AID</string>
+    <string name="title">AID: </string>
     <string name="title_default">Write aid here.</string>
     <string name="info_default"> </string>
     <string name="get_info">GET</string>

@@ -23,11 +23,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
+        android:autofillHints="@string/title_default"
         android:ems="10"
         android:hint="@string/title_default"
-        android:autofillHints="@string/title_default"
         android:inputType="text"
-        android:text="@string/title_default"
+        android:text="43521684"
         app:layout_constraintStart_toEndOf="@+id/aidTitle"
         app:layout_constraintTop_toTopOf="@+id/aidTitle" />
 

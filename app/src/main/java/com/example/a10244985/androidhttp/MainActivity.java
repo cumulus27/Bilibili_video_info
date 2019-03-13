@@ -20,11 +20,16 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText aid=null;
     Button get=null;
     TextView content=null;
+
+    JSONObject main_result=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,26 @@ public class MainActivity extends AppCompatActivity {
                String aid_number = aid.getText().toString();
                String cookies = getResources().getString(R.string.COOKIES);
 
+               GetInfo task = new GetInfo(aid_number);
+               task.set_parameter(base_url, cookies, requestQueue);
+
+               VolleyCallback call = new VolleyCallback() {
+                   @Override
+                   public void onSuccessResponse(JSONObject result) {
+                       main_result = result;
+//                       content.setText(result.toString());
+                       content.setText(main_result.toString());
+                   }
+               };
+
+               task.send_request(call);
+//               task.analyse_result(main_result);
+
+//               String info = task.get_response();
+
+//                String info = main_result.toString();
+
+//               content.setText(info);
 
             }
 

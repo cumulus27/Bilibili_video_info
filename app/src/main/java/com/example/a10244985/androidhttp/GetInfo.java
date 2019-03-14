@@ -1,5 +1,7 @@
 package com.example.a10244985.androidhttp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebSettings;
@@ -17,6 +19,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 class GetInfo {
 
     private static final String TAG = "GetInfo";
@@ -27,7 +34,10 @@ class GetInfo {
     private String cookies;
     private RequestQueue queue;
 
+    String image_url = "";
+
     GetInfo(String aid_){
+        aid_ = aid_.replace("av", "");
         this.aid = aid_;
         this.result_str = null;
 
@@ -100,6 +110,59 @@ class GetInfo {
     String get_response(){
 
         return this.result_str;
+    }
+
+
+    String get_image_url(JSONObject result){
+
+        String key = "pic";
+        String image_url = "";
+
+        try{
+
+            JSONObject data = result.getJSONObject("data");
+            image_url = data.getString(key);
+            Log.d(TAG, image_url);
+
+        }catch (JSONException e){
+            Log.e(TAG, e.toString());
+        }
+
+        return image_url;
+
+    }
+
+    void get_image_bit(final ImageCallback image_call){
+
+        while (this.image_url.length() == 0){
+            try{
+                Thread.sleep(2000);
+                Log.d(TAG, "waiting...");
+            }catch (InterruptedException e){
+                Log.e(TAG, e.toString());
+            }
+
+        }
+
+        final String url = this.image_url;
+        Log.d("Confirm url", url);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bitmap image_bit = BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
+                    Log.d(TAG, "Success get the image");
+                    image_call.onSuccessDown(image_bit);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
     }
 
 

@@ -1,11 +1,16 @@
 package com.example.a10244985.androidhttp;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.Cache;
@@ -23,11 +28,19 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
 
     EditText aid=null;
     Button get=null;
     TextView content=null;
+    ImageView cover=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
         aid = (EditText) findViewById(R.id.aidText);
         get = (Button) findViewById(R.id.getInfo);
-        content=(TextView) findViewById(R.id.aidInfo);
+        content = (TextView) findViewById(R.id.aidInfo);
+        cover = (ImageView) findViewById(R.id.cover);
 
         content.setMovementMethod(ScrollingMovementMethod.getInstance());
 
@@ -74,10 +88,29 @@ public class MainActivity extends AppCompatActivity {
 
                        String info = task.get_response();
                        content.setText(info);
+
+                       String image_url = task.get_image_url(result);
+                       Log.d(TAG, image_url);
+
+                       task.image_url = image_url;
+
                    }
                };
 
                task.send_request(call);
+
+               ImageCallback image_call = new ImageCallback() {
+                   @Override
+                   public void onSuccessDown(Bitmap image_bit) {
+
+                       cover.setImageBitmap(image_bit);
+
+                   }
+               };
+
+//               String image_url = task.image_url;
+//               Log.d(TAG,image_url);
+               task.get_image_bit(image_call);
 
             }
 

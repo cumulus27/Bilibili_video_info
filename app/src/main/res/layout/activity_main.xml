@@ -27,7 +27,7 @@
         android:ems="10"
         android:hint="@string/title_default"
         android:inputType="text"
-        android:text="43521684"
+        android:text="@string/default_id"
         app:layout_constraintStart_toEndOf="@+id/aidTitle"
         app:layout_constraintTop_toTopOf="@+id/aidTitle" />
 

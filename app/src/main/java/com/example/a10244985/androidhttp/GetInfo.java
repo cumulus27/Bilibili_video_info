@@ -1,5 +1,6 @@
 package com.example.a10244985.androidhttp;
 
+import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebSettings;
 
@@ -12,25 +13,23 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 class GetInfo {
 
     private static final String TAG = "GetInfo";
 
     private String aid;
-    private String result_json;
+    private String result_str;
     private String base_url;
     private String cookies;
     private RequestQueue queue;
 
     GetInfo(String aid_){
         this.aid = aid_;
-        this.result_json = null;
+        this.result_str = null;
 
     }
 
@@ -46,14 +45,20 @@ class GetInfo {
 
         String url = this.base_url;
         final String put_aid = this.aid;
+        final GetInfo this_task = this;
+
+        Uri.Builder builder = Uri.parse(url).buildUpon();
+        builder.appendQueryParameter("aid", put_aid);
+        String paramUrl=builder.build().toString();
+        Log.d(TAG, paramUrl);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                (Request.Method.GET, paramUrl, null, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, response.toString());
-                        callback.onSuccessResponse(response);
+                        callback.onSuccessResponse(response, this_task);
                     }
                 }, new Response.ErrorListener() {
 
@@ -62,42 +67,39 @@ class GetInfo {
                         // TODO: Handle error
                         Log.e("OnErrorResponse", error.toString());
                     }
-                }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                //headers.put("Content-Type", "application/json");
-                headers.put("Host", "api.bilibili.com");
-                headers.put("Connection", "keep-alive");
-                headers.put("Accept", "application/json, text/plain, */*");
-                headers.put("User-Agent", "Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2224.3 Safari/537.36");
-                headers.put("Referer", "https://www.bilibili.com");
-                headers.put("Accept-Encoding", "gzip, deflate, br");
-                headers.put("Accept-Language", "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7");
-
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("aid", put_aid);
-                return params;
-
-            }
-        };
+                });
 
         queue.add(jsonObjectRequest);
     }
 
     void analyse_result(JSONObject result){
-        this.result_json = result.toString();
+
+//        Log.d("Data confirm", result.toString());
+
+        String lines = "";
+        String[] keys = {"title", "tname", "dynamic", "videos", "desc"};
+
+        try{
+
+            JSONObject data = result.getJSONObject("data");
+
+            for (String key: keys) {
+                String item = data.getString(key);
+                String line = String.format("%s: %s\n", key, item);
+                lines = lines.concat(line);
+            }
+
+        }catch (JSONException e){
+            Log.e(TAG, e.toString());
+        }
+
+        this.result_str = lines;
 
     }
 
     String get_response(){
 
-        return this.result_json;
+        return this.result_str;
     }
 
 

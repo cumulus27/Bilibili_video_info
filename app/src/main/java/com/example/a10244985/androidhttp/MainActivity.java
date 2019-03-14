@@ -29,8 +29,6 @@ public class MainActivity extends AppCompatActivity {
     Button get=null;
     TextView content=null;
 
-    JSONObject main_result=null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,21 +69,15 @@ public class MainActivity extends AppCompatActivity {
 
                VolleyCallback call = new VolleyCallback() {
                    @Override
-                   public void onSuccessResponse(JSONObject result) {
-                       main_result = result;
-//                       content.setText(result.toString());
-                       content.setText(main_result.toString());
+                   public void onSuccessResponse(JSONObject result, GetInfo task) {
+                       task.analyse_result(result);
+
+                       String info = task.get_response();
+                       content.setText(info);
                    }
                };
 
                task.send_request(call);
-//               task.analyse_result(main_result);
-
-//               String info = task.get_response();
-
-//                String info = main_result.toString();
-
-//               content.setText(info);
 
             }
 

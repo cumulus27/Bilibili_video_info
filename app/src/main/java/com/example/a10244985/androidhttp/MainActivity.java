@@ -32,6 +32,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     Button get=null;
     TextView content=null;
     ImageView cover=null;
+
+    ScheduledExecutorService schedulePool = Executors.newScheduledThreadPool(1);;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                String aid_number = aid.getText().toString();
                String cookies = getResources().getString(R.string.COOKIES);
 
-               GetInfo task = new GetInfo(aid_number);
+               final GetInfo task = new GetInfo(aid_number);
                task.set_parameter(base_url, cookies, requestQueue);
 
                VolleyCallback call = new VolleyCallback() {
@@ -89,17 +94,15 @@ public class MainActivity extends AppCompatActivity {
                        String info = task.get_response();
                        content.setText(info);
 
-                       String image_url = task.get_image_url(result);
-                       Log.d(TAG, image_url);
-
-                       task.image_url = image_url;
+                       task.image_url = task.get_image_url(result);
+                       Log.d(TAG, task.image_url);
 
                    }
                };
 
                task.send_request(call);
 
-               ImageCallback image_call = new ImageCallback() {
+               final ImageCallback image_call = new ImageCallback() {
                    @Override
                    public void onSuccessDown(Bitmap image_bit) {
 
@@ -108,14 +111,18 @@ public class MainActivity extends AppCompatActivity {
                    }
                };
 
-//               String image_url = task.image_url;
-//               Log.d(TAG,image_url);
-               task.get_image_bit(image_call);
+               Thread image_task = new Thread(new Runnable() {
+                   @Override
+                   public void run() {
+                       task.get_image_bit(image_call);
+                   }
+               });
+
+               schedulePool.schedule(image_task, 1, TimeUnit.SECONDS);
 
             }
 
         });
-
 
     }
 }

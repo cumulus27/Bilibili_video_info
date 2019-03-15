@@ -23,6 +23,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 class GetInfo {
 
@@ -134,37 +137,20 @@ class GetInfo {
 
     void get_image_bit(final ImageCallback image_call){
 
-        while (this.image_url.length() == 0){
-            try{
-                Thread.sleep(2000);
-                Log.d(TAG, "waiting...");
-            }catch (InterruptedException e){
-                Log.e(TAG, e.toString());
-            }
-
-        }
-
         final String url = this.image_url;
         Log.d("Confirm url", url);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Bitmap image_bit = BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
-                    Log.d(TAG, "Success get the image");
-                    image_call.onSuccessDown(image_bit);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }).start();
+        try {
+            Bitmap image_bit = BitmapFactory.decodeStream((InputStream)new URL(url).getContent());
+            Log.d(TAG, "Success get the image");
+            image_call.onSuccessDown(image_bit);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
-
 
 }
 

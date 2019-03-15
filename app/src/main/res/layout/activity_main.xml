@@ -10,7 +10,7 @@
         android:id="@+id/aidTitle"
         android:layout_width="80dp"
         android:layout_height="44dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="32dp"
         android:autoSizeTextType="uniform"
         android:gravity="center"
@@ -44,7 +44,7 @@
         android:id="@+id/getInfo"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
-        android:layout_marginStart="160dp"
+        android:layout_marginStart="140dp"
         android:layout_marginBottom="28dp"
         android:text="@string/get_info"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,8 +53,7 @@
     <ImageView
         android:id="@+id/cover"
         android:layout_width="322dp"
-        android:layout_height="222dp"
-        android:layout_marginTop="36dp"
+        android:layout_height="212dp"
         app:layout_constraintStart_toStartOf="@+id/aidInfo"
         app:layout_constraintTop_toBottomOf="@+id/aidInfo"
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
